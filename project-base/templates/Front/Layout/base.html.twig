@@ -21,7 +21,15 @@
     </head>
 
     <body class="web">
+        <div style="width: 16px; height: 16px; position: absolute; background-color: rebeccapurple; z-index: 99999999999" class="asd"></div>
+        <script>
+            $("body").click(function(e){
+                var relX = e.pageX;
+                var relY = e.pageY;
 
+                $('.asd').css({top: relY, left: relX});
+            });
+        </script>
         {{ render(controller('App\\Controller\\Front\\ScriptController:embedAllPagesScriptsAction')) }}
         {{ render(controller('App\\Controller\\Front\\ScriptController:embedAllPagesGoogleAnalyticsScriptAction')) }}
 

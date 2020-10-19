@@ -46,6 +46,14 @@ class StrictWebDriver extends WebDriver
     /**
      * {@inheritDoc}
      */
+    public function scrollToByCss($css, $offsetX = null, $offsetY = null)
+    {
+        parent::scrollTo(['css' => $css], $offsetX, $offsetY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     protected function findFields($selector)
     {
         if (!is_array($selector) && !$selector instanceof WebDriverElement) {

@@ -165,6 +165,7 @@ class OrderCest
         $orderPage->fillBillingAddress('Koksární 10', 'Ostrava', '702 00');
         $me->waitForAjax();
         $orderPage->acceptLegalConditions();
+        $me->makeScreenshot();
 
         $me->clickByTranslationFrontend('Finish the order');
 
