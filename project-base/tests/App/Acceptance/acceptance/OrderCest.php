@@ -166,6 +166,8 @@ class OrderCest
         $me->waitForAjax();
         $orderPage->acceptLegalConditions();
 
+        $me->wait(5);
+
         $me->clickByTranslationFrontend('Finish the order');
 
         $me->seeTranslationFrontend('Order sent');
