@@ -31,7 +31,6 @@ docker image pull ${DOCKER_USERNAME}/php-fpm:${DOCKER_IMAGE_TAG} || (
         --build-arg project_root=project-base \
         --tag ${DOCKER_USERNAME}/php-fpm:${DOCKER_IMAGE_TAG} \
         --target ci \
-        --no-cache \
         -f project-base/docker/php-fpm/Dockerfile \
         . &&
     docker image push ${DOCKER_USERNAME}/php-fpm:${DOCKER_IMAGE_TAG}
@@ -100,4 +99,4 @@ kubectl rollout status --namespace=${JOB_NAME} deployment/webserver-php-fpm --wa
 PHP_FPM_POD=$(kubectl get pods --namespace=${JOB_NAME} -l app=webserver-php-fpm -o=jsonpath='{.items[0].metadata.name}')
 
 # Run phing build targets for build of the application
-kubectl exec ${PHP_FPM_POD} --namespace=${JOB_NAME} -- ./phing -D production.confirm.action=y backend-api-install backend-api-oauth-keys-generate frontend-api-enable test-db-create test-dirs-create checks-ci
+kubectl exec ${PHP_FPM_POD} --namespace=${JOB_NAME} -- ./phing -D production.confirm.action=y test-db-create test-db-demo test-elasticsearch-index-recreate test-elasticsearch-export tests-acceptance
