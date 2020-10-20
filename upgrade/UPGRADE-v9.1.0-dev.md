@@ -166,3 +166,6 @@ There you can find links to upgrade notes for other versions too.
 
 - add adverts in frontend API ([#2068](https://github.com/shopsys/shopsys/pull/2068))
     - see #project-base-diff to update your project
+
+- allow placing scripts in administration after content([#2086](https://github.com/shopsys/shopsys/pull/2086))
+    - see #project-base-diff to update your project
