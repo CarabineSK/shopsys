@@ -88,7 +88,7 @@
                         <div class="form-choice">
                             <div class="form-choice__label">
                                 {{ form_widget(form.legalConditionsAgreement, { attr: { class: "css-checkbox" } }) }}
-                                <label for="{{ form.legalConditionsAgreement.vars.id }}" class="css-checkbox__image">
+                                <label for="{{ form.legalConditionsAgreement.vars.id }}" class="test-check-mg css-checkbox__image">
                                     {% if privacyPolicyArticle is not null and termsAndConditionsArticle is not null %}
                                         {% set privacyPolicyUrl = url('front_article_detail', {'id': privacyPolicyArticle.id}) %}
                                         {% set termsAndConditionsUrl = url('front_article_detail', {'id': termsAndConditionsArticle.id}) %}

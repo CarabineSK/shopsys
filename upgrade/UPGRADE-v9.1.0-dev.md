@@ -160,3 +160,7 @@ There you can find links to upgrade notes for other versions too.
     - translation in the administration was changed from "Main page products" to "Promoted products"
         - translation ID will be changed accordingly in the next major
     - see #project-base-diff to update your project
+
+- load javascripts after content is loaded ([#1879](https://github.com/shopsys/shopsys/pull/1879))
+    - if you set the parameter `fp_js_form_validator.twig_extension.class` to a custom class, please adjust this class according to [#1879](https://github.com/shopsys/shopsys/pull/1879)
+    - see #project-base-diff to update your project

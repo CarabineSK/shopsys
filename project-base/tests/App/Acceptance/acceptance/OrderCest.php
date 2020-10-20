@@ -167,6 +167,8 @@ class OrderCest
         $orderPage->acceptLegalConditions();
         $me->makeScreenshot();
 
+        $me->wait(5);
+
         $me->clickByTranslationFrontend('Finish the order');
 
         $me->seeTranslationFrontend('Order sent');
