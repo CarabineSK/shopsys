@@ -19,7 +19,6 @@
         <title>{% block title %}Shopsys Framework{% endblock %} {{ getSeoTitleAddOn() }}</title>
     </head>
 
-
     <body class="web">
         <div style="width: 16px; height: 16px; position: absolute; background-color: rebeccapurple; z-index: 99999999999" class="asd"></div>
         <script>
@@ -35,8 +34,8 @@
 
         {% block html_body %}{% endblock %}
 
-        {% block javascripts_bottom %}{% endblock %}
         {{ encore_entry_script_tags('frontend') }}
+        {% block javascripts_bottom %}{% endblock %}
 
         {{ js_validator_config() }}
         {{ init_js_validation() }}
