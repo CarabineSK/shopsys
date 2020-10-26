@@ -11,6 +11,7 @@ use Shopsys\FrameworkBundle\Component\Domain\Domain;
 use Shopsys\FrameworkBundle\Component\Paginator\QueryPaginator;
 use Shopsys\FrameworkBundle\Component\Router\FriendlyUrl\FriendlyUrlFacade;
 use Shopsys\FrameworkBundle\Component\Router\FriendlyUrl\FriendlyUrlRepository;
+use Shopsys\FrameworkBundle\Model\Category\CategoryFacade;
 use Shopsys\FrameworkBundle\Model\Product\Parameter\ParameterRepository;
 use Shopsys\FrameworkBundle\Model\Product\Pricing\ProductPrice;
 use Shopsys\FrameworkBundle\Model\Product\Product;
@@ -56,6 +57,11 @@ class ProductExportRepository
     protected $friendlyUrlFacade;
 
     /**
+     * @var \Shopsys\FrameworkBundle\Model\Category\CategoryFacade
+     */
+    protected $categoryFacade;
+
+    /**
      * @param \Doctrine\ORM\EntityManagerInterface $em
      * @param \Shopsys\FrameworkBundle\Model\Product\Parameter\ParameterRepository $parameterRepository
      * @param \Shopsys\FrameworkBundle\Model\Product\ProductFacade $productFacade
@@ -63,6 +69,7 @@ class ProductExportRepository
      * @param \Shopsys\FrameworkBundle\Component\Domain\Domain $domain
      * @param \Shopsys\FrameworkBundle\Model\Product\ProductVisibilityRepository $productVisibilityRepository
      * @param \Shopsys\FrameworkBundle\Component\Router\FriendlyUrl\FriendlyUrlFacade $friendlyUrlFacade
+     * @param \Shopsys\FrameworkBundle\Model\Category\CategoryFacade $categoryFacade
      */
     public function __construct(
         EntityManagerInterface $em,
@@ -71,7 +78,8 @@ class ProductExportRepository
         FriendlyUrlRepository $friendlyUrlRepository,
         Domain $domain,
         ProductVisibilityRepository $productVisibilityRepository,
-        FriendlyUrlFacade $friendlyUrlFacade
+        FriendlyUrlFacade $friendlyUrlFacade,
+        CategoryFacade $categoryFacade
     ) {
         $this->parameterRepository = $parameterRepository;
         $this->productFacade = $productFacade;
@@ -80,6 +88,7 @@ class ProductExportRepository
         $this->domain = $domain;
         $this->productVisibilityRepository = $productVisibilityRepository;
         $this->friendlyUrlFacade = $friendlyUrlFacade;
+        $this->categoryFacade = $categoryFacade;
     }
 
     /**
@@ -202,8 +211,14 @@ class ProductExportRepository
             'description' => $product->getDescription($domainId),
             'short_description' => $product->getShortDescription($domainId),
             'brand' => $product->getBrand() ? $product->getBrand()->getId() : '',
+            'brand_name' => $product->getBrand() ? $product->getBrand()->getName() : '',
+            'brand_url' => $this->getBrandUrlForDomainByProduct($product, $domainId),
             'flags' => $flagIds,
             'categories' => $categoryIds,
+            'main_category_id' => $this->categoryFacade->getProductMainCategoryByDomainId(
+                $product,
+                $domainId
+            )->getId(),
             'in_stock' => $product->getCalculatedAvailability()->getDispatchTime() === 0,
             'prices' => $prices,
             'parameters' => $parameters,
@@ -332,7 +347,9 @@ class ProductExportRepository
 
             $parameters[] = [
                 'parameter_id' => $parameter->getId(),
+                'parameter_name' => $parameter->getName($locale),
                 'parameter_value_id' => $parameterValue->getId(),
+                'parameter_value_text' => $parameterValue->getText(),
             ];
         }
 
@@ -388,5 +405,24 @@ class ProductExportRepository
         }
 
         return $visibility;
+    }
+
+    /**
+     * @param \Shopsys\FrameworkBundle\Model\Product\Product $product
+     * @param int $domainId
+     * @return string
+     */
+    protected function getBrandUrlForDomainByProduct(Product $product, int $domainId): string
+    {
+        $brand = $product->getBrand();
+        if ($brand === null) {
+            return '';
+        }
+
+        return $this->friendlyUrlFacade->getAbsoluteUrlByRouteNameAndEntityId(
+            $domainId,
+            'front_brand_detail',
+            $brand->getId()
+        );
     }
 }

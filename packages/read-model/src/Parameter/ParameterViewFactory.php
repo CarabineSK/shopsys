@@ -21,4 +21,18 @@ class ParameterViewFactory
             $productParameterValue->getValue()->getText()
         );
     }
+
+    /**
+     * @param array $parameter
+     * @return \Shopsys\ReadModelBundle\Parameter\ParameterView
+     */
+    public function createFromElasticsearchParameter(array $parameter): ParameterView
+    {
+        return new ParameterView(
+            $parameter['parameter_id'],
+            $parameter['parameter_name'],
+            $parameter['parameter_value_id'],
+            $parameter['parameter_value_text']
+        );
+    }
 }

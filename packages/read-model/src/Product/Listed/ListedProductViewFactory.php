@@ -6,9 +6,7 @@ namespace Shopsys\ReadModelBundle\Product\Listed;
 
 use BadMethodCallException;
 use Shopsys\FrameworkBundle\Component\Domain\Domain;
-use Shopsys\FrameworkBundle\Component\Money\Money;
 use Shopsys\FrameworkBundle\Model\Pricing\Group\PricingGroup;
-use Shopsys\FrameworkBundle\Model\Pricing\Price;
 use Shopsys\FrameworkBundle\Model\Product\Pricing\ProductPrice;
 use Shopsys\FrameworkBundle\Model\Product\Product;
 use Shopsys\FrameworkBundle\Model\Product\ProductCachedAttributesFacade;
@@ -16,6 +14,7 @@ use Shopsys\ReadModelBundle\Image\ImageView;
 use Shopsys\ReadModelBundle\Image\ImageViewFacadeInterface;
 use Shopsys\ReadModelBundle\Product\Action\ProductActionView;
 use Shopsys\ReadModelBundle\Product\Action\ProductActionViewFacadeInterface;
+use Shopsys\ReadModelBundle\Product\PriceFactory;
 
 class ListedProductViewFactory
 {
@@ -124,7 +123,7 @@ class ListedProductViewFactory
             $productArray['name'],
             $productArray['short_description'],
             $productArray['availability'],
-            $this->getProductPriceFromArrayByPricingGroup($productArray['prices'], $pricingGroup),
+            PriceFactory::createProductPriceFromArrayByPricingGroup($productArray['prices'], $pricingGroup),
             $productArray['flags'],
             $productActionView,
             $imageView
@@ -165,25 +164,6 @@ class ListedProductViewFactory
         return array_map(static function (Product $product): int {
             return $product->getId();
         }, $products);
-    }
-
-    /**
-     * @param array $pricesArray
-     * @param \Shopsys\FrameworkBundle\Model\Pricing\Group\PricingGroup $pricingGroup
-     * @return \Shopsys\FrameworkBundle\Model\Product\Pricing\ProductPrice|null
-     */
-    protected function getProductPriceFromArrayByPricingGroup(array $pricesArray, PricingGroup $pricingGroup): ?ProductPrice
-    {
-        foreach ($pricesArray as $priceArray) {
-            if ($priceArray['pricing_group_id'] === $pricingGroup->getId()) {
-                $priceWithoutVat = Money::create((string)$priceArray['price_without_vat']);
-                $priceWithVat = Money::create((string)$priceArray['price_with_vat']);
-                $price = new Price($priceWithoutVat, $priceWithVat);
-                return new ProductPrice($price, $priceArray['price_from']);
-            }
-        }
-
-        return null;
     }
 
     /**

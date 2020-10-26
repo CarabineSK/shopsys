@@ -6,8 +6,12 @@ namespace Shopsys\FrameworkBundle\Model\Product\Search;
 
 use Doctrine\ORM\QueryBuilder;
 use Elasticsearch\Client;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
+use Shopsys\FrameworkBundle\Component\Domain\Domain;
+use Shopsys\FrameworkBundle\Component\Elasticsearch\Exception\ElasticsearchIndexException;
 use Shopsys\FrameworkBundle\Component\Elasticsearch\IndexDefinitionLoader;
 use Shopsys\FrameworkBundle\Model\Product\Elasticsearch\ProductIndex;
+use Shopsys\FrameworkBundle\Model\Product\Exception\ProductNotFoundException;
 
 class ProductElasticsearchRepository
 {
@@ -37,21 +41,29 @@ class ProductElasticsearchRepository
     protected $indexDefinitionLoader;
 
     /**
+     * @var \Shopsys\FrameworkBundle\Component\Domain\Domain
+     */
+    protected $domain;
+
+    /**
      * @param \Elasticsearch\Client $client
      * @param \Shopsys\FrameworkBundle\Model\Product\Search\ProductElasticsearchConverter $productElasticsearchConverter
      * @param \Shopsys\FrameworkBundle\Model\Product\Search\FilterQueryFactory $filterQueryFactory
      * @param \Shopsys\FrameworkBundle\Component\Elasticsearch\IndexDefinitionLoader $indexDefinitionLoader
+     * @param \Shopsys\FrameworkBundle\Component\Domain\Domain $domain
      */
     public function __construct(
         Client $client,
         ProductElasticsearchConverter $productElasticsearchConverter,
         FilterQueryFactory $filterQueryFactory,
-        IndexDefinitionLoader $indexDefinitionLoader
+        IndexDefinitionLoader $indexDefinitionLoader,
+        Domain $domain
     ) {
         $this->client = $client;
         $this->productElasticsearchConverter = $productElasticsearchConverter;
         $this->filterQueryFactory = $filterQueryFactory;
         $this->indexDefinitionLoader = $indexDefinitionLoader;
+        $this->domain = $domain;
     }
 
     /**
@@ -198,5 +210,34 @@ class ProductElasticsearchRepository
         $result = $this->client->search($filterQuery->getQuery());
 
         return $this->extractTotalCount($result);
+    }
+
+    /**
+     * @param int $productId
+     * @return array
+     */
+    public function getProductById(int $productId): array
+    {
+        $alias = $this->indexDefinitionLoader->getIndexDefinition(
+            ProductIndex::getName(),
+            $this->domain->getId()
+        )->getIndexAlias();
+
+        $params = [
+            'index' => $alias,
+            'id' => $productId,
+        ];
+
+        try {
+            $result = $this->client->get($params);
+        } catch (Missing404Exception $exception) {
+            $error = json_decode($exception->getMessage(), true)['error'];
+            if ($error['type'] === 'index_not_found_exception') {
+                throw ElasticsearchIndexException::noIndexFoundForAlias($error['index']);
+            }
+            throw new ProductNotFoundException();
+        }
+
+        return $this->productElasticsearchConverter->fillEmptyFields($result['_source']);
     }
 }

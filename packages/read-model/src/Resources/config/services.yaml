@@ -17,7 +17,7 @@ services:
         class: Shopsys\ReadModelBundle\Product\Action\ProductActionViewFacade
 
     Shopsys\ReadModelBundle\Product\Detail\ProductDetailViewFacadeInterface:
-        class: Shopsys\ReadModelBundle\Product\Detail\ProductDetailViewFacade
+        class: Shopsys\ReadModelBundle\Product\Detail\ProductDetailViewElasticsearchFacade
 
     Shopsys\ReadModelBundle\Product\Listed\ListedProductVariantsViewFacadeInterface:
         class: Shopsys\ReadModelBundle\Product\Listed\ListedProductVariantsViewFacade
