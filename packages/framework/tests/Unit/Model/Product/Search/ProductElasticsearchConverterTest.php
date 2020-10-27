@@ -64,8 +64,8 @@ class ProductElasticsearchConverterTest extends TestCase
                 [
                     'parameter_id' => 1,
                     'parameter_value_id' => 1,
-                ]
-            ]
+                ],
+            ],
         ];
 
         $expected = [
@@ -81,7 +81,7 @@ class ProductElasticsearchConverterTest extends TestCase
                     'parameter_name' => '',
                     'parameter_value_id' => 1,
                     'parameter_value_text' => '',
-                ]
+                ],
             ],
             'availability' => '',
             'detail_url' => '',
