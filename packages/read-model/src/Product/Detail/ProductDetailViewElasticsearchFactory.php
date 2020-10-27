@@ -87,7 +87,6 @@ class ProductDetailViewElasticsearchFactory
      * @param \Shopsys\ReadModelBundle\Image\ImageView[] $imageViews
      * @param \Shopsys\ReadModelBundle\Parameter\ParameterView[] $parameterViews
      * @param \Shopsys\ReadModelBundle\Brand\BrandView $brandView
-     *
      * @return \Shopsys\ReadModelBundle\Product\Detail\ProductDetailView
      */
     protected function createInstance(
