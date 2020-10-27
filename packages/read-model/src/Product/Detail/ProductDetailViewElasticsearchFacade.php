@@ -41,7 +41,7 @@ class ProductDetailViewElasticsearchFacade implements ProductDetailViewFacadeInt
      */
     public function getVisibleProductDetail(int $productId): ProductDetailView
     {
-        return $this->productDetailViewElasticsearchFactory->createFromElasticsearchProduct(
+        return $this->productDetailViewElasticsearchFactory->createFromProductArray(
             $this->productElasticsearchRepository->getProductById($productId)
         );
     }

@@ -64,58 +64,59 @@ class ProductDetailViewElasticsearchFactory
     }
 
     /**
-     * @param array $product
+     * @param array $productArray
      * @return \Shopsys\ReadModelBundle\Product\Detail\ProductDetailView
      */
-    public function createFromElasticsearchProduct(array $product): ProductDetailView
+    public function createFromProductArray(array $productArray): ProductDetailView
     {
         $parameterViews = [];
-        foreach ($product['parameters'] as $parameter) {
+        foreach ($productArray['parameters'] as $parameter) {
             $parameterViews[] = $this->parameterViewFactory->createFromElasticsearchParameter($parameter);
         }
 
         return $this->createInstance(
-            $product,
-            $this->imageViewFacade->getAllImagesByEntityId(Product::class, $product['id']),
+            $productArray,
+            $this->imageViewFacade->getAllImagesByEntityId(Product::class, $productArray['id']),
             $parameterViews,
-            $this->brandViewFactory->createFromElasticsearchProduct($product)
+            $this->brandViewFactory->createFromElasticsearchProduct($productArray)
         );
     }
 
     /**
-     * @param array $product
+     * @param array $productArray
      * @param \Shopsys\ReadModelBundle\Image\ImageView[] $imageViews
      * @param \Shopsys\ReadModelBundle\Parameter\ParameterView[] $parameterViews
      * @param \Shopsys\ReadModelBundle\Brand\BrandView $brandView
+     *
      * @return \Shopsys\ReadModelBundle\Product\Detail\ProductDetailView
      */
     protected function createInstance(
-        array $product,
+        array $productArray,
         array $imageViews,
         array $parameterViews,
         BrandView $brandView
     ): ProductDetailView {
         return new ProductDetailView(
-            $product['id'],
-            $product['seo_h1'] ?: $product['name'],
-            $product['description'],
-            $product['availability'],
+            $productArray['id'],
+            $productArray['seo_h1'] ?: $productArray['name'],
+            $productArray['description'],
+            $productArray['availability'],
             PriceFactory::createProductPriceFromArrayByPricingGroup(
-                $product['prices'],
+                $productArray['prices'],
                 $this->currentCustomerUser->getPricingGroup()
             ),
-            $product['catnum'],
-            $product['partno'],
-            $product['ean'],
-            $product['main_category_id'],
-            $product['calculated_selling_denied'],
-            $product['in_stock'],
-            $product['is_main_variant'],
-            $product['main_variant_id'],
-            $product['flags'],
-            $product['seo_title'] ?: $product['name'],
-            $product['seo_meta_description'],
-            $this->productActionViewFactory->createFromArray($product),
+            $productArray['catnum'],
+            $productArray['partno'],
+            $productArray['ean'],
+            $productArray['main_category_id'],
+            $productArray['calculated_selling_denied'],
+            $productArray['in_stock'],
+            $productArray['is_main_variant'],
+            $productArray['main_variant_id'],
+            $productArray['flags'],
+            $productArray['seo_title'] ?: $productArray['name'],
+            $productArray['seo_meta_description'],
+            $this->productActionViewFactory->createFromArray($productArray),
             $brandView,
             $this->getMainImageView($imageViews),
             $imageViews,
