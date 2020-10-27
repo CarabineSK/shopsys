@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Shopsys\FrameworkBundle\Model\Product\Elasticsearch;
 
+use BadMethodCallException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -69,7 +70,7 @@ class ProductExportRepository
      * @param \Shopsys\FrameworkBundle\Component\Domain\Domain $domain
      * @param \Shopsys\FrameworkBundle\Model\Product\ProductVisibilityRepository $productVisibilityRepository
      * @param \Shopsys\FrameworkBundle\Component\Router\FriendlyUrl\FriendlyUrlFacade $friendlyUrlFacade
-     * @param \Shopsys\FrameworkBundle\Model\Category\CategoryFacade $categoryFacade
+     * @param \Shopsys\FrameworkBundle\Model\Category\CategoryFacade|null $categoryFacade
      */
     public function __construct(
         EntityManagerInterface $em,
@@ -79,7 +80,7 @@ class ProductExportRepository
         Domain $domain,
         ProductVisibilityRepository $productVisibilityRepository,
         FriendlyUrlFacade $friendlyUrlFacade,
-        CategoryFacade $categoryFacade
+        ?CategoryFacade $categoryFacade = null
     ) {
         $this->parameterRepository = $parameterRepository;
         $this->productFacade = $productFacade;
@@ -88,6 +89,38 @@ class ProductExportRepository
         $this->domain = $domain;
         $this->productVisibilityRepository = $productVisibilityRepository;
         $this->friendlyUrlFacade = $friendlyUrlFacade;
+        $this->categoryFacade = $categoryFacade;
+    }
+
+    /**
+     * @required
+     *
+     * @param \Shopsys\FrameworkBundle\Model\Category\CategoryFacade $categoryFacade
+     * @internal This function will be replaced by constructor injection in next major
+     */
+    public function setCategoryFacade(CategoryFacade $categoryFacade): void
+    {
+        if (
+            $this->categoryFacade !== null
+            && $this->categoryFacade !== $categoryFacade
+        ) {
+            throw new BadMethodCallException(sprintf(
+                'Method "%s" has been already called and cannot be called multiple times.',
+                __METHOD__
+            ));
+        }
+        if ($this->categoryFacade !== null) {
+            return;
+        }
+
+        @trigger_error(
+            sprintf(
+                'The %s() method is deprecated and will be removed in the next major. Use the constructor injection instead.',
+                __METHOD__
+            ),
+            E_USER_DEPRECATED
+        );
+
         $this->categoryFacade = $categoryFacade;
     }
 

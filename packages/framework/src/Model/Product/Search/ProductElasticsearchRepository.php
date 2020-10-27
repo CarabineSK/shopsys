@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Shopsys\FrameworkBundle\Model\Product\Search;
 
+use BadMethodCallException;
 use Doctrine\ORM\QueryBuilder;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
@@ -50,19 +51,51 @@ class ProductElasticsearchRepository
      * @param \Shopsys\FrameworkBundle\Model\Product\Search\ProductElasticsearchConverter $productElasticsearchConverter
      * @param \Shopsys\FrameworkBundle\Model\Product\Search\FilterQueryFactory $filterQueryFactory
      * @param \Shopsys\FrameworkBundle\Component\Elasticsearch\IndexDefinitionLoader $indexDefinitionLoader
-     * @param \Shopsys\FrameworkBundle\Component\Domain\Domain $domain
+     * @param \Shopsys\FrameworkBundle\Component\Domain\Domain|null $domain
      */
     public function __construct(
         Client $client,
         ProductElasticsearchConverter $productElasticsearchConverter,
         FilterQueryFactory $filterQueryFactory,
         IndexDefinitionLoader $indexDefinitionLoader,
-        Domain $domain
+        ?Domain $domain = null
     ) {
         $this->client = $client;
         $this->productElasticsearchConverter = $productElasticsearchConverter;
         $this->filterQueryFactory = $filterQueryFactory;
         $this->indexDefinitionLoader = $indexDefinitionLoader;
+        $this->domain = $domain;
+    }
+
+    /**
+     * @required
+     *
+     * @param \Shopsys\FrameworkBundle\Component\Domain\Domain $domain
+     * @internal This function will be replaced by constructor injection in next major
+     */
+    public function setCategoryFacade(Domain $domain): void
+    {
+        if (
+            $this->domain !== null
+            && $this->domain !== $domain
+        ) {
+            throw new BadMethodCallException(sprintf(
+                'Method "%s" has been already called and cannot be called multiple times.',
+                __METHOD__
+            ));
+        }
+        if ($this->domain !== null) {
+            return;
+        }
+
+        @trigger_error(
+            sprintf(
+                'The %s() method is deprecated and will be removed in the next major. Use the constructor injection instead.',
+                __METHOD__
+            ),
+            E_USER_DEPRECATED
+        );
+
         $this->domain = $domain;
     }
 
