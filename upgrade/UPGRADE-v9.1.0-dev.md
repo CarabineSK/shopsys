@@ -170,3 +170,8 @@ There you can find links to upgrade notes for other versions too.
 - remove hirak/prestissimo from Dockerfile ([#2089](https://github.com/shopsys/shopsys/pull/2089))
     - make sure you have composer 2 installed (`composer --version`)
     - see #project-base-diff to update your project 
+
+- ProductDetailView provided by elasticsearch ([#2090](https://github.com/shopsys/shopsys/pull/2090))
+    - add new fields to elasticsearch index definition for all domains 
+        - see #project-base-diff to update your project
+    - run `php phing elasticsearch-index-migrate elasticsearch-export` to apply changes
