@@ -74,7 +74,7 @@ class ProductDetailViewElasticsearchFactory
             $parameterViews[] = $this->parameterViewFactory->createFromElasticsearchParameter($parameter);
         }
 
-        return $this->createInstanceFromElasticsearch(
+        return $this->createInstance(
             $product,
             $this->imageViewFacade->getAllImagesByEntityId(Product::class, $product['id']),
             $parameterViews,
@@ -89,7 +89,7 @@ class ProductDetailViewElasticsearchFactory
      * @param \Shopsys\ReadModelBundle\Brand\BrandView $brandView
      * @return \Shopsys\ReadModelBundle\Product\Detail\ProductDetailView
      */
-    protected function createInstanceFromElasticsearch(
+    protected function createInstance(
         array $product,
         array $imageViews,
         array $parameterViews,
