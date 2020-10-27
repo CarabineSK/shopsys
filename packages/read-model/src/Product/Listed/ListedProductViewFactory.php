@@ -167,6 +167,19 @@ class ListedProductViewFactory
     }
 
     /**
+     * @param array $pricesArray
+     * @param \Shopsys\FrameworkBundle\Model\Pricing\Group\PricingGroup $pricingGroup
+     * @return \Shopsys\FrameworkBundle\Model\Product\Pricing\ProductPrice|null
+     * @deprecated This method will be removed in next major. Use PriceFactory::createProductPriceFromArrayByPricingGroup() instead.
+     */
+    protected function getProductPriceFromArrayByPricingGroup(
+        array $pricesArray,
+        PricingGroup $pricingGroup
+    ): ?ProductPrice {
+        return PriceFactory::createProductPriceFromArrayByPricingGroup($pricesArray, $pricingGroup);
+    }
+
+    /**
      * @param \Shopsys\FrameworkBundle\Model\Product\Product $product
      * @return int[]
      */
