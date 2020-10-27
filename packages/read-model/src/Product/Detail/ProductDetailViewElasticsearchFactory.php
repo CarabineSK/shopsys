@@ -7,7 +7,6 @@ namespace Shopsys\ReadModelBundle\Product\Detail;
 use Shopsys\FrameworkBundle\Component\Utils\Utils;
 use Shopsys\FrameworkBundle\Model\Customer\User\CurrentCustomerUser;
 use Shopsys\FrameworkBundle\Model\Product\Product;
-use Shopsys\FrameworkBundle\Model\Seo\SeoSettingFacade;
 use Shopsys\ReadModelBundle\Brand\BrandView;
 use Shopsys\ReadModelBundle\Brand\BrandViewFactory;
 use Shopsys\ReadModelBundle\Image\ImageView;
@@ -22,11 +21,6 @@ class ProductDetailViewElasticsearchFactory
      * @var \Shopsys\ReadModelBundle\Image\ImageViewFacadeInterface
      */
     protected $imageViewFacade;
-
-    /**
-     * @var \Shopsys\FrameworkBundle\Model\Seo\SeoSettingFacade
-     */
-    protected $seoSettingFacade;
 
     /**
      * @var \Shopsys\FrameworkBundle\Model\Customer\User\CurrentCustomerUser
@@ -50,7 +44,6 @@ class ProductDetailViewElasticsearchFactory
 
     /**
      * @param \Shopsys\ReadModelBundle\Image\ImageViewFacadeInterface $imageViewFacade
-     * @param \Shopsys\FrameworkBundle\Model\Seo\SeoSettingFacade $seoSettingFacade
      * @param \Shopsys\FrameworkBundle\Model\Customer\User\CurrentCustomerUser $currentCustomerUser
      * @param \Shopsys\ReadModelBundle\Product\Action\ProductActionViewFactory $productActionViewFactory
      * @param \Shopsys\ReadModelBundle\Parameter\ParameterViewFactory $parameterViewFactory
@@ -58,14 +51,12 @@ class ProductDetailViewElasticsearchFactory
      */
     public function __construct(
         ImageViewFacadeInterface $imageViewFacade,
-        SeoSettingFacade $seoSettingFacade,
         CurrentCustomerUser $currentCustomerUser,
         ProductActionViewFactory $productActionViewFactory,
         ParameterViewFactory $parameterViewFactory,
         BrandViewFactory $brandViewFactory
     ) {
         $this->imageViewFacade = $imageViewFacade;
-        $this->seoSettingFacade = $seoSettingFacade;
         $this->currentCustomerUser = $currentCustomerUser;
         $this->productActionViewFactory = $productActionViewFactory;
         $this->parameterViewFactory = $parameterViewFactory;
