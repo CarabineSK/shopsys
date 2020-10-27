@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Shopsys\ReadModelBundle\Product\Detail;
 
+use Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainElasticFacade;
 use Shopsys\FrameworkBundle\Model\Product\Search\ProductElasticsearchRepository;
 
 class ProductDetailViewElasticsearchFacade implements ProductDetailViewFacadeInterface
@@ -24,15 +25,23 @@ class ProductDetailViewElasticsearchFacade implements ProductDetailViewFacadeInt
     protected $productDetailViewElasticsearchFactory;
 
     /**
+     * @var \Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainElasticFacade
+     */
+    protected $productOnCurrentDomainElasticFacade;
+
+    /**
      * @param \Shopsys\FrameworkBundle\Model\Product\Search\ProductElasticsearchRepository $productElasticsearchRepository
      * @param \Shopsys\ReadModelBundle\Product\Detail\ProductDetailViewElasticsearchFactory $productDetailViewElasticsearchFactory
+     * @param \Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainElasticFacade $productOnCurrentDomainElasticFacade
      */
     public function __construct(
         ProductElasticsearchRepository $productElasticsearchRepository,
-        ProductDetailViewElasticsearchFactory $productDetailViewElasticsearchFactory
+        ProductDetailViewElasticsearchFactory $productDetailViewElasticsearchFactory,
+        ProductOnCurrentDomainElasticFacade $productOnCurrentDomainElasticFacade
     ) {
         $this->productElasticsearchRepository = $productElasticsearchRepository;
         $this->productDetailViewElasticsearchFactory = $productDetailViewElasticsearchFactory;
+        $this->productOnCurrentDomainElasticFacade = $productOnCurrentDomainElasticFacade;
     }
 
     /**
@@ -42,7 +51,7 @@ class ProductDetailViewElasticsearchFacade implements ProductDetailViewFacadeInt
     public function getVisibleProductDetail(int $productId): ProductDetailView
     {
         return $this->productDetailViewElasticsearchFactory->createFromProductArray(
-            $this->productElasticsearchRepository->getProductById($productId)
+            $this->productOnCurrentDomainElasticFacade->getVisibleProductArrayById($productId)
         );
     }
 }

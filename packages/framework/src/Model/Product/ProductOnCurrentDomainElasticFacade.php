@@ -10,6 +10,7 @@ use Shopsys\FrameworkBundle\Component\Paginator\PaginationResult;
 use Shopsys\FrameworkBundle\Model\Category\Category;
 use Shopsys\FrameworkBundle\Model\Customer\User\CurrentCustomerUser;
 use Shopsys\FrameworkBundle\Model\Product\Accessory\ProductAccessoryRepository;
+use Shopsys\FrameworkBundle\Model\Product\Exception\ProductNotFoundException;
 use Shopsys\FrameworkBundle\Model\Product\Filter\ProductFilterConfig;
 use Shopsys\FrameworkBundle\Model\Product\Filter\ProductFilterCountData;
 use Shopsys\FrameworkBundle\Model\Product\Filter\ProductFilterData;
@@ -434,5 +435,21 @@ class ProductOnCurrentDomainElasticFacade implements ProductOnCurrentDomainFacad
 
         $productsResult = $this->productElasticsearchRepository->getSortedProductsResultByFilterQuery($filterQuery);
         return $productsResult->getHits();
+    }
+
+    /**
+     * @param int $productId
+     * @return array
+     */
+    public function getVisibleProductArrayById(int $productId): array
+    {
+        $products = $this->productElasticsearchRepository->getProductsByFilterQuery(
+            $this->filterQueryFactory->createVisibleProductsByProductIdFilter($productId)
+        );
+
+        if (count($products) === 0) {
+            throw new ProductNotFoundException();
+        }
+        return array_shift($products);
     }
 }

@@ -7,12 +7,9 @@ namespace Shopsys\FrameworkBundle\Model\Product\Search;
 use BadMethodCallException;
 use Doctrine\ORM\QueryBuilder;
 use Elasticsearch\Client;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Shopsys\FrameworkBundle\Component\Domain\Domain;
-use Shopsys\FrameworkBundle\Component\Elasticsearch\Exception\ElasticsearchIndexException;
 use Shopsys\FrameworkBundle\Component\Elasticsearch\IndexDefinitionLoader;
 use Shopsys\FrameworkBundle\Model\Product\Elasticsearch\ProductIndex;
-use Shopsys\FrameworkBundle\Model\Product\Exception\ProductNotFoundException;
 
 class ProductElasticsearchRepository
 {
@@ -246,31 +243,12 @@ class ProductElasticsearchRepository
     }
 
     /**
-     * @param int $productId
+     * @param \Shopsys\FrameworkBundle\Model\Product\Search\FilterQuery $filterQuery
      * @return array
      */
-    public function getProductById(int $productId): array
+    public function getProductsByFilterQuery(FilterQuery $filterQuery): array
     {
-        $alias = $this->indexDefinitionLoader->getIndexDefinition(
-            ProductIndex::getName(),
-            $this->domain->getId()
-        )->getIndexAlias();
-
-        $params = [
-            'index' => $alias,
-            'id' => $productId,
-        ];
-
-        try {
-            $result = $this->client->get($params);
-        } catch (Missing404Exception $exception) {
-            $error = json_decode($exception->getMessage(), true)['error'];
-            if ($error['type'] === 'index_not_found_exception') {
-                throw ElasticsearchIndexException::noIndexFoundForAlias($error['index']);
-            }
-            throw new ProductNotFoundException();
-        }
-
-        return $this->productElasticsearchConverter->fillEmptyFields($result['_source']);
+        $result = $this->client->search($filterQuery->getQuery());
+        return $this->extractHits($result);
     }
 }
