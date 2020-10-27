@@ -205,7 +205,7 @@
           "parameter_value_id": {
             "type": "integer"
           },
-          "paramteter_value_text": {
+          "parameter_value_text": {
             "type": "text"
           }
         }
