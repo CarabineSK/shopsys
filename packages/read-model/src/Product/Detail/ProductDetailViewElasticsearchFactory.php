@@ -78,7 +78,7 @@ class ProductDetailViewElasticsearchFactory
             $productArray,
             $this->imageViewFacade->getAllImagesByEntityId(Product::class, $productArray['id']),
             $parameterViews,
-            $this->brandViewFactory->createFromElasticsearchProduct($productArray)
+            $this->brandViewFactory->createFromProductArray($productArray)
         );
     }
 
