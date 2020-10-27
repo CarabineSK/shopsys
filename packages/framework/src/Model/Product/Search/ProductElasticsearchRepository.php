@@ -66,7 +66,6 @@ class ProductElasticsearchRepository
 
     /**
      * @required
-     *
      * @param \Shopsys\FrameworkBundle\Component\Domain\Domain $domain
      * @internal This function will be replaced by constructor injection in next major
      */

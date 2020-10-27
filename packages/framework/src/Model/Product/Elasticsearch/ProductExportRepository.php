@@ -94,7 +94,6 @@ class ProductExportRepository
 
     /**
      * @required
-     *
      * @param \Shopsys\FrameworkBundle\Model\Category\CategoryFacade $categoryFacade
      * @internal This function will be replaced by constructor injection in next major
      */
